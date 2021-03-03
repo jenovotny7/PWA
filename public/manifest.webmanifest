@@ -1,8 +1,0 @@
-{   
-    "name":"PWA-Budget",
-    "short_name":"PWB",
-    "theme_color": "aqua",
-    "background_color":"aqua",
-    "start_url":"/",
-    "display":"fullscreen"
-}

@@ -1,73 +1,66 @@
+const APP_PREFIX = 'PWA-';     
+const UNIT = 'version_01';
+const CACHE = APP_PREFIX + UNIT
 const FILES = [
-  "/", 
-  "/idb.js", 
-  "/index.html",
-  "/index.js", 
-  "/manifest.webmanifest", 
-  "/styles.css"];
-
-const CACHE_MEOUTSIDE = "static-cache-v2";
-const DATA = "data-cache-v1";
-
-
-self.addEventListener("installing", function(evt) {
-evt.waitUntil(
-  caches.open(CACHE_MEOUTSIDE).then(cache => {
-    console.log("Files loaded!");
-    return cache.addAll(FILES);
-  })
-);
-
-self.skipWaiting();
-});
-
-
-self.addEventListener("activating", function(evt) {
-evt.waitUntil(
-  caches.keys().then(keyList => {
-    return Promise.all(
-      keyList.map(key => {
-        if (key !== CACHE_MEOUTSIDE && key !== DATA) {
-          console.log("Clearing stored cache", key);
-          return caches.delete(key);
-        }
-      })
-    );
-  })
-);
-
-self.clients.claim();
-});
+  "./index.html",
+  "./js/index.js",
+  "./js/db.js",
+  "./css/styles.css",
+];
 
 
 
 
-self.addEventListener("fetching", evt => {
-  if(evt.request.url.includes('/api/')) {
-      console.log('[Service Worker]', evt.request.url);
-  
-evt.respondWith(
-              caches.open(DATA).then(cache => {
-              return fetch(evt.request)
-              .then(response => {
-                  if (response.status === 200){
-                      cache.put(evt.request.url, response.clone());
-                  }
-                  return response;
-              })
-              .catch(err => {
-                  return cache.match(evt.request);
-              });
-          })
-          );
-          return;
+
+
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then(function (request) {
+      if (request) { 
+        
+        return request
+      } else {      
+        
+        return fetch(event.request)
       }
 
-evt.respondWith(
-  caches.open(CACHE_MEOUTSIDE).then( cache => {
-    return cache.match(evt.request).then(response => {
-      return response || fetch(evt.request);
-    });
-  })
-);
+     
+    })
+  )
+})
+
+
+self.addEventListener('install', function (event) {
+  event.waitUntil(
+    caches.open(CACHE).then(function (cache) {
+      console.log('cache to be installed : ' + CACHE)
+      return cache.addAll(FILES)
+    })
+  )
+})
+
+
+
+
+
+
+//Delete Cache 
+self.addEventListener('activate', function (event) {
+  event.waitUntil(
+    caches.keys().then(function (keyList) {
+      
+      let myList = keyList.filter(function (key) {
+        return key.indexOf(APP_PREFIX);
+      })
+      
+      myList.push(CACHE);
+
+      return Promise.all(keyList.map(function (key, i) {
+        if (mylist.indexOf(key) === -1) {
+          console.log('removing cache : ' + keyList[i] );
+          return caches.delete(keyList[i]);
+        }
+      }));
+    })
+  );
 });
