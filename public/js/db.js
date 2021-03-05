@@ -3,7 +3,7 @@ let database;
 
 const ask = indexedDB.open('PWA', 1);
 
-// this event will emit if the database version changes (nonexistant to version 1, v1 to v2, etc.)
+
 ask.onupgradeneeded = function(event) {
     
     const database = event.target.result;
@@ -12,7 +12,7 @@ ask.onupgradeneeded = function(event) {
 };
 
 ask.onsuccess = function(event) {
-    db = event.target.result; 
+    database = event.target.result; 
     if (navigator.onLine) {
       }
 };
@@ -24,10 +24,10 @@ ask.onerror = function(event) {
 // This function will be executed if we attempt to submit a new transaction and there's no internet connection
 function saveTransaction(record) {
 
-    const transaction = database.transaction(['new_charge'], 'readwrite');
+    const wire = database.transaction(['new_charge'], 'readwrite');
   
  
-    const bankObjectStore = transaction.objectStore('new_charge');
+    const bankObjectStore = wire.objectStore('new_charge');
   
   
     bankObjectStore.add(record);
@@ -36,10 +36,10 @@ function saveTransaction(record) {
 
 function loadTransaction() {
     // open a transaction on your db
-    const transaction = database.transaction(['new_charge'], 'readwrite');
+    const wire = database.transaction(['new_charge'], 'readwrite');
   
    
-    const bankObjectStore = transaction.objectStore('new_charge');
+    const bankObjectStore = wire.objectStore('new_charge');
   
     
     const getMoney = bankObjectStore.getAll();
@@ -61,9 +61,9 @@ function loadTransaction() {
                 throw new Error(serverResponse);
             }
            
-            const transaction = database.transaction(['new_charge'], 'readwrite');
+            const wire = database.transaction(['new_charge'], 'readwrite');
             
-            const newObjectStore = transaction.objectStore('new_charge');
+            const newObjectStore = wire.objectStore('new_charge');
             
            newObjectStore.clear();
 
