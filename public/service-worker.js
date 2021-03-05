@@ -50,7 +50,7 @@ self.addEventListener('activate', function (event) {
     caches.keys().then(function (keyList) {
       
       let myList = keyList.filter(function (key) {
-        return key.indexOf(APP_PREFIX);
+        return key.indexOf(APP_NAME);
       })
       
       myList.push(CACHE);
