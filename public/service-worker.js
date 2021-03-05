@@ -1,6 +1,6 @@
-const APP_PREFIX = 'PWA-';     
+const APP_NAME = 'PWA-';     
 const UNIT = 'version_01';
-const CACHE = APP_PREFIX + UNIT
+const CACHE = APP_NAME + UNIT
 const FILES = [
   "./index.html",
   "./js/index.js",
